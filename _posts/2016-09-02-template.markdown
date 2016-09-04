@@ -1,0 +1,24 @@
+---
+layout: post
+title:  "Template!"
+date:   2016-09-02 16:48:29 +0200
+categories: jekyll update
+---
+Nous pouvons par exemple présenter le problème.
+
+{% highlight ruby %}
+#ici on ajoute le code et l'erreur ou le bug
+{% endhighlight %}
+
+Nous parlons des solutions possibles et ajoutons ce morceau de code
+
+
+{% highlight ruby %}
+
+cd
+#ouah c'est trop puissant
+pwd
+lala=3
+echo $lala
+#voici un commentaire
+{% endhighlight %}
