@@ -114,13 +114,14 @@ Ainsi nous disposons de l'arborescence suivante:
       * ST      
       * DT
       * Stat      
+&nbsp;
 
 ### 3) La diffusion
 
 Bibliographie à renseigner. En attendant, une définition à minima:
 
 "L’IRM de diffusion est une technique basée sur l'imagerie par résonance magnétique (IRM). Elle permet de calculer en chaque point de l'image la distribution des directions de diffusion des molécules d'eau. Cette diffusion étant contrainte par les tissus environnants, cette modalité d'imagerie permet d'obtenir indirectement la position, l’orientation et l’anisotropie des structures fibreuses, notamment les faisceaux de matière blanche du cerveau". Source: [wikipedia](https://fr.wikipedia.org/wiki/IRM_de_diffusion).
-
+&nbsp;
 
 #### 3.1) Localisation des algorithmes/programmes/logiciels.
 
@@ -150,6 +151,9 @@ En effet, nous allons utiliser plusieurs logiciels de visualisation dont:
 * `Blender`: logiciel de rendu 3D, plus que extrêmement au top, la preuve en [images](https://www.blender.org/features/). Téléchargeable [ici](https://www.blender.org/).
 
 NB: Ils sont tous déjà installés sur le pc de post-traitement de l'équipe imagerie.
+
+&nbsp;
+
 
 #### 3.1) Extraction des données de diffusion
 
@@ -194,6 +198,7 @@ cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 {% endhighlight %}
 
 Plusieurs messages s'affichent, noter l'enregistrement de nombreux fichiers dans votre dossier `STDT/DT/` et en particulier dans le sous dossier `DT_PREPROCESSED_VTI`.
+&nbsp;
 
 #### 3.2) Visualisation des données
 
@@ -218,9 +223,37 @@ cd /home/choupinetleouf/Dev/itksnap-3.4.0-20151130-Linux-x86_64/bin/
 {% endhighlight %}
 
 ![image3](../../../../../images/image3.png)
+&nbsp;
+
+#### 3.3) Advanced Normalization Tools (ANTs)
+
+Par la suite, nous allons utliser une librairie nommée `ANTs` pour Advanced Normalization Tools. `ANTs` est expliqué plus en détail [ici](http://stnava.github.io/ANTs/). Quelques remarques.  
+
+* `ANTs` vient du monde de la neuro.
+* `ANTS` est une librairie contenant des fonctions et un ensemble de scripts appelant ces fonctions. Il fonctionne exclusivement en ligne de commande, et permet un traitement complètement automatisé d'un large spectre de données d'imagerie.
+* Idéalement `ANTs` devrait être utilisé pour traiter nos données.
+* Nous l'utiliserons pour plusieurs aspects: la correction des inhomogénéités du champs, pour la registration et la création de template.
+
+NB: `ANTs` est déjà installé sur le pc de post-traitement de l'équipe imagerie.
+
+Sinon cloner ou télécharger le code [ici](https://github.com/stnava/ANTs.git), et on lance ces commandes:
+
+{% highlight ruby %}
+git clone git://github.com/stnava/ANTs.git
+mkdir ants-build
+cd ants-build
+cmake ../ANTs
+make -j 8
+#puis attendez longtemps
+{% endhighlight %}
+&nbsp;
+
+#### 3.4) Correction de biais (N4 ITK bias correcction)
 
 
-#### 3.3) Segmentation
+
+
+#### 3.5) Segmentation
 
 La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large.
 
