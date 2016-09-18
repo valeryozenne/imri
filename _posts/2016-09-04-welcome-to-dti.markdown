@@ -12,17 +12,48 @@ Bienvenue sur ce tutorial consacré au traitement des données Bruker de diffusi
 
 ![image1](../../../../../images/image1.png)
 
-#### 1.1) Pré-requis
+&nbsp;
+
+#### 1.1) Sommaire
+
+Les questions ( dans le désordre ) que vous vous posez où vous pouvez lire ce tutorial pas à pas.
+
+
+
+* [Par où commencer ?](#prerequis)
+
+* [Est-ce que c'est compliqué ?](#complique)
+
+* [Comment extraire les données en format DICOM ?](#dicomExtraction)
+
+* [Qu'est ce que la diffusion ?](#diffusion)
+
+* [Quels logiciels utiliser pour effectuer la segmentation ?](#logiciel)
+
+* [Comment exporter ma segmentation sous forme de mesh ? ](#nomAncre1)
+
+* [Comment créer un gif traversant l'échantillon en short axis ? ](#nomAncre2)
+
+&nbsp;
+
+#### 1.2) Pré-requis <a id="prerequis"></a>
 
 Aucun pré-requis n'est nécessaire, si toutefois ce tutorial est incomplet et/ou contient des approximations, n'hésitez pas à nous en faire part. Vous pouvez évidemment contribuer, corriger, et/ou créer très rapidement votre page.
 
-> Comme tout tutoriel, c'est parfois long et un peu fastidieux la première fois. Compter une journée de travail pour traiter votre premier jeu de données. Après quelques jours, 30 minutes suffisent pour tout effectuer.
+ <a id="complique"></a>
+ &nbsp;
 
-#### 1.2) Extraction des données de la console Bruker sous format DICOM
+> Comme tout tutoriel, c'est parfois long et un peu fastidieux la première fois. Compter une demi-journée de travail pour traiter votre premier jeu de données. Après quelques jours, 30 minutes suffisent pour tout effectuer.
 
-(à compléter) Nous allons utliser le logiciel Paravision de Bruker pour extraire les images au format DICOM.
+&nbsp;
 
-#### 1.3) Copie des données de la console Bruker sous format Bruker
+#### 1.3) Extraction des données de la console Bruker sous format DICOM  <a id="dicomExtraction"></a>
+
+(à compléter) Nous allons utliser le logiciel `Paravision` de Bruker pour extraire les images au format DICOM.
+
+&nbsp;
+
+#### 1.4) Copie des données de la console Bruker sous format Bruker
 
 Lors de l'examen, les données Bruker sont stockés dans des dossiers numérotés par ordre d'acquisition des séquences. Par exemple, nous allons extraire le dossier numéro `35` du l'examen intitulé `2016-09-09-examen`.
 
@@ -35,7 +66,7 @@ cd /opt/PV6/.../2016-09-09-examen
 ls
 {% endhighlight %}
 
-#### 1.4) Arborescence des fichiers Bruker
+#### 1.5) Arborescence des fichiers Bruker
 
 Pour chaque acquisition numérotée de 1 à N, nous retrouvons la même arborescence avec:
 
@@ -116,11 +147,12 @@ Ainsi nous disposons de l'arborescence suivante:
       * Stat      
 &nbsp;
 
-### 3) La diffusion
+### 3) La diffusion <a id="diffusion"></a>
 
 Bibliographie à renseigner. En attendant, une définition à minima:
 
 "L’IRM de diffusion est une technique basée sur l'imagerie par résonance magnétique (IRM). Elle permet de calculer en chaque point de l'image la distribution des directions de diffusion des molécules d'eau. Cette diffusion étant contrainte par les tissus environnants, cette modalité d'imagerie permet d'obtenir indirectement la position, l’orientation et l’anisotropie des structures fibreuses, notamment les faisceaux de matière blanche du cerveau". Source: [wikipedia](https://fr.wikipedia.org/wiki/IRM_de_diffusion).
+
 &nbsp;
 
 #### 3.1) Localisation des algorithmes/programmes/logiciels.
@@ -130,7 +162,7 @@ Bibliographie à renseigner. En attendant, une définition à minima:
 En effectant ces commandes vous trouverez la liste des programmes en développement
 
 {% highlight ruby %}
-#localisation des programmes
+#localisation des programmes <a id="logiciels"></a>
 cd /home/nelsonleouf/Dev/Vtk
 ls
 {% endhighlight %}
@@ -210,7 +242,7 @@ cd /home/nelsonleouf/Dev/VolView-3.4-Linux-x86_64/bin/
 ./Volview
 {% endhighlight %}
 
-Puis ouvrer le fichier `/home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/coeur_2/35/STDT/DT/DT_PREPROCESSED_VTI/139_DT_03_intensity.vti`
+Puis ouvrez le fichier `/home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/coeur_2/35/STDT/DT/DT_PREPROCESSED_VTI/139_DT_03_intensity.vti`
 
 ![image2](../../../../../images/image2.png)
 
@@ -225,7 +257,9 @@ cd /home/choupinetleouf/Dev/itksnap-3.4.0-20151130-Linux-x86_64/bin/
 ![image3](../../../../../images/image3.png)
 &nbsp;
 
-#### 3.3) Advanced Normalization Tools (ANTs)
+
+
+#### 3.3) Advanced Normalization Tools (ANTs) <a id="ants"></a>
 
 Par la suite, nous allons utliser une librairie nommée `ANTs` pour Advanced Normalization Tools. `ANTs` est expliqué plus en détail [ici](http://stnava.github.io/ANTs/). Quelques remarques.  
 
@@ -246,15 +280,50 @@ cmake ../ANTs
 make -j 8
 #puis attendez longtemps
 {% endhighlight %}
+
+Rendez-vous sur [ANTs](http://http://stnava.github.io/ANTs/) pour en savoir plus!
+
 &nbsp;
 
 #### 3.4) Correction de biais (N4 ITK bias correcction)
 
+Cette étape est relativement longue (pour l'ordinateur), pour pouvoir passer outre si ce calcul a été fait, un drapeau a été ajouté dans le fichier de configuration `info.txt` à la ligne douze. `1` code pour effectuer ce calcul, `0` code pour ne pas effectuer ce calcul. Dans un premier temps, nous choisirons d'activer ce calcul en mettant le drapeau à `1`.
+
+Nous lançons la commande suivante
+
+{% highlight ruby %}
+# déplacement si necessaire
+cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
+# lancement de la commande à quatre argument avec le mode n°2
+./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ coeur_2/ 35 2
+{% endhighlight %}
+
+ Une fois ce calcul effectué, vous pouvez regarder avec le logiciel `Volview` les fichiers résultants et noter les différences en terme d'intensité. Pour cela ouvrez le logiciel `Volview` comme ceci:
+
+{% highlight ruby %}
+#ouvrer un terminal
+cd
+cd Dev/Volview/bin
+./Volview
+#en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/139_DT_04_diffusion_weighted_image_cut.vtk
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/139_DT_04_diffusion_weighted_image_cut_N4.vtk
+{% endhighlight %}
+
+![image4](../../../../../images/image4.png)
+
+Vous pouvez maintenant désactiver la correction de biais N4 dans le fichier de configuration `info.txt` en mettant le drapeau à `0`.
+
+#### 3.5) Segmentation <a id="segmentation"></a>
+
+La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large. Pour cela, l'échantillon est divisé en 3 segments selon l'axe principal du coeur (z généralement). Si ce n'est pas le cas veuillez effectuer les rotations nécessaires. VOus allez maintenant segmenter chaque région de l'échantillon. Pour cela nous utiliserons le logiciel Seg3D et nous segmenterons plusieurs contrasters: l'image pondérée en diffusion, la fraction d'anistropie, la trace. Nous ajouterons alors chaque threshold obtenu dans le fichier de configuration `threshold.txt`.
 
 
 
-#### 3.5) Segmentation
 
-La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large.
 
-Rendez-vous sur [ANTs](http://http://stnava.github.io/ANTs/) pour tout apprendre à partir de zéro !
+
+
+
+
+#### 3.6) Titre <a id="nomAncre"></a>
