@@ -16,13 +16,12 @@ Bienvenue sur ce tutorial consacré au traitement des données Bruker de diffusi
 
 #### 1.1) Sommaire
 
-Les questions ( dans le désordre ) que vous vous posez où vous pouvez lire ce tutorial pas à pas.
 
-
+Les questions ( dans le désordre ) que vous vous posez.
 
 * [Par où commencer ?](#prerequis)
 
-* [Est-ce que c'est compliqué ?](#complique)
+* [Est-ce que c'est compliqué ?](#prerequis)
 
 * [Comment extraire les données en format DICOM ?](#dicomExtraction)
 
@@ -34,16 +33,15 @@ Les questions ( dans le désordre ) que vous vous posez où vous pouvez lire ce 
 
 * [Comment créer un gif traversant l'échantillon en short axis ? ](#nomAncre2)
 
+* [Quelques exemples de figures à présenter.](#joliesfigures)
+
 &nbsp;
 
 #### 1.2) Pré-requis <a id="prerequis"></a>
 
-Aucun pré-requis n'est nécessaire, si toutefois ce tutorial est incomplet et/ou contient des approximations, n'hésitez pas à nous en faire part. Vous pouvez évidemment contribuer, corriger, et/ou créer très rapidement votre page.
+Aucun pré-requis n'est nécessaire, si toutefois ce tutorial est incomplet et/ou contient des erreurs/approximations, n'hésitez pas à nous en faire part. Vous pouvez évidemment contribuer, corriger, et/ou créer très rapidement votre page.
 
- <a id="complique"></a>
- &nbsp;
-
-> Comme tout tutoriel, c'est parfois long et un peu fastidieux la première fois. Compter une demi-journée de travail pour traiter votre premier jeu de données. Après quelques jours, 30 minutes suffisent pour tout effectuer.
+Compter une demi-journée de travail pour traiter votre premier jeu de données. Après quelques jours, 30 minutes suffisent pour tout effectuer.
 
 &nbsp;
 
@@ -65,6 +63,9 @@ cd /opt/PV6/.../2016-09-09-examen
 #taper la commande suivante pour obtenir la liste des dossiers
 ls
 {% endhighlight %}
+
+&nbsp;
+
 
 #### 1.5) Arborescence des fichiers Bruker
 
@@ -91,31 +92,37 @@ Dans chaque dossier de reconstruction (par ex. `2016-09-09-examen/35/pdata/1`), 
 * un fichier texte `visu_pars` qui contient d'autres détails concernant la reconstruction effectuées.
 * la liste est aussi non exclusive, pour tout renseignement supplémentaire, ce [lien](http://imaging.mrc-cbu.cam.ac.uk/imaging/FormatBruker) est plus complet.
 
+&nbsp;
+
+
+#### 1.6) Contribuer à ce tutoriel
+
+&nbsp;
+
 ### 2) Quelques pré-requis organisationnels
 
-> Avant de commencer quelques conseils. Les données peuvent être copiées sur votre espace personnel de stockage : smb://prenom.nom et utilisées sur le pc de post-traitement de l'équipe imagerie. Il est préférable de ne pas créer de doublons
-de vos données car cela risque de prendre beaucoup d'espace.
+> Avant de commencer quelques conseils. Les données peuvent être copiées sur votre espace personnel de stockage : smb://prenom.nom et utilisées sur le pc de post-traitement de l'équipe imagerie. Il est préférable de ne pas créer de doublons de vos données pour préserver l'espace dsique.
 
 #### 2.1) Création de l'arborescence des données IRM
 
 Les données sont copiées par exemple dans le répertoire `data-bruker` et sont classées par espèce, puis numérotées arbitrairement pour chaque échantillon, elles sont généralement classées par ordre d'acquisition.
 
-* Espece_1
-  * Coeur_1     (janvier 2016)
-  * Coeur_2     (avril 2016)
-  * Coeur_3     (mai 2016)
+* `Espece_1`
+  * `Coeur_1`     (janvier 2016)
+  * `Coeur_2`     (avril 2016)
+  * `Coeur_3`     (mai 2016)
 
 Dans chaque dossier nous retrouvons les données de diffusion notées et les données de haute résolution si les deux sont présentes.
 
-  * Espece_2
-    * Coeur_1  
-      * 35        (données de diffusion)
-      * 36        (données de résolution)         
-    * Coeur_2
+  * `Espece_2`
+    * `Coeur_1`  
+      * `35`        (données de diffusion)
+      * `36`        (données de résolution)         
+    * `Coeur_2`
 
 #### 2.1) Création de l'arborescence des données de post-traitées
 
-Pour préserver les données acquises de toute mauvaise manipulation, le travail de post-traitement est effectué dans un nouveau dossier nommé STDT. Il est généré en lancant le script suivant:
+Pour préserver les données acquises de toute mauvaise manipulation, le travail de post-traitement est effectué dans un nouveau dossier nommé `STDT`. Il est généré en lancant le script suivant:
 
 {% highlight ruby %}
 cd /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/coeur_2/
@@ -137,14 +144,35 @@ sh createfolder.sh
 
 Ainsi nous disposons de l'arborescence suivante:
 
-* Espece_2
-  * Coeur_1  
-    * 35        (données de diffusion)
-    * 36        (données de résolution)  
-    * STDT      (dossier de post-traitement)
-      * ST      
-      * DT
-      * Stat      
+* `Espece_2`
+  * `Coeur_1`  
+    * `35`        (données de diffusion)
+    * `36`        (données de résolution)  
+    * `STDT`      (dossier de post-traitement)
+      * `ST`      
+      * `DT`
+      * `Stat`      
+&nbsp;
+
+
+#### 2.1) Les librairies Visualisation Tool Kit (VTK) et Image Tool Kit (ITK)
+
+
+
+
+#### 2.2) Les formats de données
+
+Pour permettre l'intéraction entre différents logiciels, nous allons utiliser de nombreux formats de données.
+
+* les formats propriétaires `Bruker`: les données sont stockés en binaire en 16 bit unsign pour les fid et 32 bit unsign pour les images reconstruites.
+
+* le format `VTK`: c'est celui ci que nous allons principalement utiliser. Ils comprends plusieurs sous format:
+  * `.vti` : le format `image data`, comprend un en-tête en htlm suivi des données stockées en binaire
+  * `.vtk` : le format `DATASET STRUCTURED_POINTS`, comprend un en-tête en `ASCII` suivi des données stockées en binaire ou en `ASCII` (ancien format).
+  *
+
+* le format matlab
+
 &nbsp;
 
 ### 3) La diffusion <a id="diffusion"></a>
@@ -316,12 +344,43 @@ Vous pouvez maintenant désactiver la correction de biais N4 dans le fichier de 
 
 #### 3.5) Segmentation <a id="segmentation"></a>
 
-La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large. Pour cela, l'échantillon est divisé en 3 segments selon l'axe principal du coeur (z généralement). Si ce n'est pas le cas veuillez effectuer les rotations nécessaires. VOus allez maintenant segmenter chaque région de l'échantillon. Pour cela nous utiliserons le logiciel Seg3D et nous segmenterons plusieurs contrasters: l'image pondérée en diffusion, la fraction d'anistropie, la trace. Nous ajouterons alors chaque threshold obtenu dans le fichier de configuration `threshold.txt`.
+La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large. Pour cela, l'échantillon est divisé en 3 segments selon l'axe principal du coeur (z généralement). Si ce n'est pas le cas veuillez effectuer les rotations nécessaires.
+
+La première étape est un seuillage sur les images pondérée en diffusion, la fraction d'anistropie, la trace.
+
+Vous allez premièrement segmenter 3 régions de l'échantillon. Pour cela nous utiliserons le logiciel Seg3D, nous ajouterons alors chaque threshold obtenu dans le fichier de configuration `threshold.txt` selon la procédure suivante.
+
+{% highlight ruby %}
+#ouvrer un terminal puis ouvrez le logiciel de segmentation Seg3D2
+cd
+cd Dev/Seg3D2/bin/
+./Seg3D
+#en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
+
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
+
+{% endhighlight %}
+
+Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex de l'échantillon. L'eujeux maintenant est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oublié lors de la segmentation.
+
+Maintenant vous pouvez
 
 
 
 
 
+
+{% highlight ruby %}
+
+
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part2.vtk
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
+
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part1.vtk
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part2.vtk
+ /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part3.vtk
+{% endhighlight %}
 
 
 
