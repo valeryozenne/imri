@@ -6,7 +6,7 @@ categories: jekyll update
 ---
 > Ceci est une page en construction.
 
-### 1) Introduction
+## 1) Introduction
 
 Bienvenue sur ce tutorial consacré au traitement des données Bruker de diffusion et de haute résolution pour l'analyse de la structure cardiaque.
 
@@ -14,7 +14,7 @@ Bienvenue sur ce tutorial consacré au traitement des données Bruker de diffusi
 
 &nbsp;
 
-#### 1.1) Sommaire
+### 1.1) Sommaire
 
 
 Les questions ( dans le désordre ) que vous vous posez.
@@ -35,9 +35,11 @@ Les questions ( dans le désordre ) que vous vous posez.
 
 * [Quelques exemples de figures à présenter.](#joliesfigures)
 
+* [Le lexique.](#lexique)
+
 &nbsp;
 
-#### 1.2) Pré-requis <a id="prerequis"></a>
+### 1.2) Pré-requis <a id="prerequis"></a>
 
 Aucun pré-requis n'est nécessaire, si toutefois ce tutorial est incomplet et/ou contient des erreurs/approximations, n'hésitez pas à nous en faire part. Vous pouvez évidemment contribuer, corriger, et/ou créer très rapidement votre page.
 
@@ -45,13 +47,13 @@ Compter une demi-journée de travail pour traiter votre premier jeu de données.
 
 &nbsp;
 
-#### 1.3) Extraction des données de la console Bruker sous format DICOM  <a id="dicomExtraction"></a>
+### 1.3) (à compléter) Extraction des données de la console Bruker sous format DICOM  <a id="dicomExtraction"></a>
 
-(à compléter) Nous allons utliser le logiciel `Paravision` de Bruker pour extraire les images au format DICOM.
+Nous allons utliser le logiciel `Paravision` de Bruker pour extraire les images au format DICOM.
 
 &nbsp;
 
-#### 1.4) Copie des données de la console Bruker sous format Bruker
+### 1.4) (à compléter) Copie des données de la console Bruker sous format Bruker
 
 Lors de l'examen, les données Bruker sont stockés dans des dossiers numérotés par ordre d'acquisition des séquences. Par exemple, nous allons extraire le dossier numéro `35` du l'examen intitulé `2016-09-09-examen`.
 
@@ -67,7 +69,7 @@ ls
 &nbsp;
 
 
-#### 1.5) Arborescence des fichiers Bruker
+### 1.5) Arborescence des fichiers Bruker
 
 Pour chaque acquisition numérotée de 1 à N, nous retrouvons la même arborescence avec:
 
@@ -95,15 +97,15 @@ Dans chaque dossier de reconstruction (par ex. `2016-09-09-examen/35/pdata/1`), 
 &nbsp;
 
 
-#### 1.6) Contribuer à ce tutoriel
+### 1.6) Contribuer à ce tutoriel
 
 &nbsp;
 
-### 2) Quelques pré-requis organisationnels
+## 2) Quelques pré-requis organisationnels
 
 > Avant de commencer quelques conseils. Les données peuvent être copiées sur votre espace personnel de stockage : smb://prenom.nom et utilisées sur le pc de post-traitement de l'équipe imagerie. Il est préférable de ne pas créer de doublons de vos données pour préserver l'espace dsique.
 
-#### 2.1) Création de l'arborescence des données IRM
+### 2.1) Création de l'arborescence des données IRM
 
 Les données sont copiées par exemple dans le répertoire `data-bruker` et sont classées par espèce, puis numérotées arbitrairement pour chaque échantillon, elles sont généralement classées par ordre d'acquisition.
 
@@ -120,7 +122,7 @@ Dans chaque dossier nous retrouvons les données de diffusion notées et les don
       * `36`        (données de résolution)         
     * `Coeur_2`
 
-#### 2.1) Création de l'arborescence des données de post-traitées
+### 2.2) Création de l'arborescence des données de post-traitées
 
 Pour préserver les données acquises de toute mauvaise manipulation, le travail de post-traitement est effectué dans un nouveau dossier nommé `STDT`. Il est généré en lancant le script suivant:
 
@@ -155,12 +157,12 @@ Ainsi nous disposons de l'arborescence suivante:
 &nbsp;
 
 
-#### 2.1) Les librairies Visualisation Tool Kit (VTK) et Image Tool Kit (ITK)
+### 2.3) Les librairies Visualisation Tool Kit (VTK) et Image Tool Kit (ITK)
 
 
 
 
-#### 2.2) Les formats de données
+### 2.4) Les formats de données
 
 Pour permettre l'intéraction entre différents logiciels, nous allons utiliser de nombreux formats de données.
 
@@ -175,7 +177,7 @@ Pour permettre l'intéraction entre différents logiciels, nous allons utiliser 
 
 &nbsp;
 
-### 3) La diffusion <a id="diffusion"></a>
+## 3) La diffusion <a id="diffusion"></a>
 
 Bibliographie à renseigner. En attendant, une définition à minima:
 
@@ -183,7 +185,7 @@ Bibliographie à renseigner. En attendant, une définition à minima:
 
 &nbsp;
 
-#### 3.1) Localisation des algorithmes/programmes/logiciels.
+### 3.1) Localisation des algorithmes/programmes/logiciels.
 
 > Plusieurs petits programmes ont été développées pour extraire, calculer et visualiser la structure cardiaque, ce protocole est susceptible d'évoluer et d'être affiné. En particulier la comparaison de multiples écchantillons nécessite quelques nouvelles fonctionnalités non développées à ce jour.  
 
@@ -215,7 +217,7 @@ NB: Ils sont tous déjà installés sur le pc de post-traitement de l'équipe im
 &nbsp;
 
 
-#### 3.1) Extraction des données de diffusion
+### 3.2) Extraction des données de diffusion
 
 Se déplacer dans le dossier suivant pour accéder à l'executable `DT_fullC_beta_0.3`  
 
@@ -247,6 +249,13 @@ Nous commencerons par uniquement renseigner le fichier `info.txt` qui à la stru
 * champ de vue suivant x
 * champ de vue suivant y
 * champ de vue suivant z
+* seuil FA min  (mettre 0)
+* seuil FA max  (mettre 0)
+* seuil Trace min (mettre 0)
+* seuil Trace max (mettre 0)
+* seuil DWI min (mettre 0)
+* seuil DWI max (mettre 0)
+* drapeau N4 (mettre 0)
 
 Et enfin nous lançons la commande
 
@@ -260,7 +269,7 @@ cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 Plusieurs messages s'affichent, noter l'enregistrement de nombreux fichiers dans votre dossier `STDT/DT/` et en particulier dans le sous dossier `DT_PREPROCESSED_VTI`.
 &nbsp;
 
-#### 3.2) Visualisation des données
+### 3.2) Visualisation des données
 
 Ouvrez un nouveau terminal et lancer le programme Volview.
 
@@ -287,7 +296,7 @@ cd /home/choupinetleouf/Dev/itksnap-3.4.0-20151130-Linux-x86_64/bin/
 
 
 
-#### 3.3) Advanced Normalization Tools (ANTs) <a id="ants"></a>
+### 3.3) Advanced Normalization Tools (ANTs) <a id="ants"></a>
 
 Par la suite, nous allons utliser une librairie nommée `ANTs` pour Advanced Normalization Tools. `ANTs` est expliqué plus en détail [ici](http://stnava.github.io/ANTs/). Quelques remarques.  
 
@@ -313,7 +322,7 @@ Rendez-vous sur [ANTs](http://http://stnava.github.io/ANTs/) pour en savoir plus
 
 &nbsp;
 
-#### 3.4) Correction de biais (N4 ITK bias correcction)
+### 3.4) Correction de biais (N4 ITK bias correcction)
 
 Cette étape est relativement longue (pour l'ordinateur), pour pouvoir passer outre si ce calcul a été fait, un drapeau a été ajouté dans le fichier de configuration `info.txt` à la ligne douze. `1` code pour effectuer ce calcul, `0` code pour ne pas effectuer ce calcul. Dans un premier temps, nous choisirons d'activer ce calcul en mettant le drapeau à `1`.
 
@@ -342,47 +351,100 @@ cd Dev/Volview/bin
 
 Vous pouvez maintenant désactiver la correction de biais N4 dans le fichier de configuration `info.txt` en mettant le drapeau à `0`.
 
-#### 3.5) Segmentation <a id="segmentation"></a>
+### 3.5) Segmentation <a id="segmentation"></a>
 
-La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large. Pour cela, l'échantillon est divisé en 3 segments selon l'axe principal du coeur (z généralement). Si ce n'est pas le cas veuillez effectuer les rotations nécessaires.
+
+La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large. Pour cela, l'échantillon est divisé en 3 segments noté apex, mid, et base selon l'axe principal du coeur. Si ce n'est pas le cas veuillez effectuer les rotations nécessaires.
 
 La première étape est un seuillage sur les images pondérée en diffusion, la fraction d'anistropie, la trace.
 
-Vous allez premièrement segmenter 3 régions de l'échantillon. Pour cela nous utiliserons le logiciel Seg3D, nous ajouterons alors chaque threshold obtenu dans le fichier de configuration `threshold.txt` selon la procédure suivante.
+Vous allez premièrement segmenter trois régions de l'échantillon de l'apex à la base. Pour cela nous utiliserons le logiciel Seg3D, nous ajouterons alors chaque seuil obtenu dans le fichier de configuration `threshold.txt` selon la procédure suivante.
 
 {% highlight ruby %}
 #ouvrer un terminal puis ouvrez le logiciel de segmentation Seg3D2
 cd
 cd Dev/Seg3D2/bin/
 ./Seg3D
-#en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
+#en haut à gauche, cliquer sur menu, puis ouvrir et charger le fichier suivant:
 
 /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
 
 {% endhighlight %}
 
-Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex de l'échantillon. L'eujeux maintenant est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oublié lors de la segmentation.
+Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'eujeux est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
 
-Maintenant vous pouvez
+Maintenant notez les deux valeurs (minimales et maximales) sur la première ligne du fichier de configuration `threshold.txt` selon cette nomenclature:
 
+**FA_min_apex** **FA_max_apex** Trace_min_apex Trace_max_apex DWI_min_apex DWI_max_apex
+FA_min_mid  FA_max_mid  Trace_min_mid  Trace_max_mid  DWI_min_mid  DWI_max_mid
+FA_min_base FA_max_base Trace_min_base Trace_max_base DWI_min_base DWI_max_base
 
+Puis passez à la région mid ventriculaire en ouvrant le fichier:
 
+{% highlight ruby %}
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part2.vtk
+{% endhighlight %}
 
+Utilisez l'option threshold et les petites croix pour segmenter la région mid-ventriculaire. N'hésitez pas enlever la graisse.
 
+Maintenant notez les valeurs minimales maximales sur la seconde ligne du fichier selon cette nomenclature:
+
+FA_min_apexFA_max_apex Trace_min_apex Trace_max_apex DWI_min_apex DWI_max_apex
+**A_min_mid** **FA_max_mid**  Trace_min_mid  Trace_max_mid  DWI_min_mid  DWI_max_mid
+FA_min_base FA_max_base Trace_min_base Trace_max_base DWI_min_base DWI_max_base
+
+Répèter cette opération pour chaque région et chaque contraste afin de remplir les 24 valeurs, 12 minimales et 12 maximales en chargeant les fichiers suivants.
 
 {% highlight ruby %}
 
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
 
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part2.vtk
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part2.vtk
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
 
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part1.vtk
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part2.vtk
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part3.vtk
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part1.vtk
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part2.vtk
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part3.vtk
+
 {% endhighlight %}
 
+Une fois ces étapes effectuées,  les valeurs de segmentation sont sauvegardées, vous obtiendrais un fichier similaire aux lignes ci-dessous. Si la segmentation n'est pas satisfaisante vous pouvez rejouer cette étape autant que nécessaire pour ajuster au mieux les seuillages.
+
+0.23 0.72 0.53 1.14 228580000 794832000     
+0.19 0.89 0.51 1.10 245244992 778752000     
+0.20 0.88 0.54 1.06 311708000 966128000
+
+Maintenant, relancer le programme `DT_fullC_beta_0` avec la commande suivante:
+
+{% highlight ruby %}
+# déplacement si necessaire
+cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
+# lancement de la commande à quatre argument avec le mode n°2
+./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ coeur_2/ 35 2
+{% endhighlight %}
+
+##### d) Quelques remarques sur cette étape.
+
+ Les volumes que vous venez de charger ont préalablement été filtrés avec un filtre gaussien 3D de kernel [1 1 1] afin d'enlever le bruit présent dans l'image et d'homogénéiser le seuillage.
 
 
 
-#### 3.6) Titre <a id="nomAncre"></a>
+
+### 3.6) Titre <a id="nomAncre"></a>
+
+
+### 9) Annexe <a id="annexe"></a>
+
+#### 9.1) Abréviation <a id="abreviation"></a>
+
+* ANTs : Advanced Normalization Tools
+* DTI :
+* DWI : diffusion weighted image
+* FA  : fraction anasotropy
+* ITK :
+* STI :
+* VTK :
+
+
+#### 9.2) Le lexique <a id="lexique"></a>
