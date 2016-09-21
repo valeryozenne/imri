@@ -107,27 +107,28 @@ Dans chaque dossier de reconstruction (par ex. `2016-09-09-examen/35/pdata/1`), 
 
 ### 2.1) Création de l'arborescence des données IRM
 
-Les données sont copiées par exemple dans le répertoire `data-bruker` et sont classées par espèce, puis numérotées arbitrairement pour chaque échantillon, elles sont généralement classées par ordre d'acquisition.
+Les données sont copiées par exemple dans le répertoire `/media/nelsonleouf/sdb1/DICOM/` et sont classées par espèce, puis numérotées arbitrairement pour chaque échantillon, elles sont généralement classées par ordre d'acquisition.
 
-* `Espece_1`
-  * `Coeur_1`     (janvier 2016)
-  * `Coeur_2`     (avril 2016)
-  * `Coeur_3`     (mai 2016)
-
+* `Kadence`
+  * `Control`
+    * `Heart_1`     (janvier 2016)
+    * `Heart_2`     (avril 2016)
+    * `Heart_3`     (mai 2016)
+  * `Infarct`
 Dans chaque dossier nous retrouvons les données de diffusion notées et les données de haute résolution si les deux sont présentes.
 
-  * `Espece_2`
-    * `Coeur_1`  
-      * `35`        (données de diffusion)
-      * `36`        (données de résolution)         
-    * `Coeur_2`
+  * `Control`
+    * `Heart_1`  
+      * `30`        (données de diffusion)
+      * `4`        (données de haute-résolution)         
+    * `Heart_2`
 
 ### 2.2) Création de l'arborescence des données de post-traitées
 
 Pour préserver les données acquises de toute mauvaise manipulation, le travail de post-traitement est effectué dans un nouveau dossier nommé `STDT`. Il est généré en lancant le script suivant:
 
 {% highlight ruby %}
-cd /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/coeur_2/
+cd /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/
 #génération des sous dossier
 sh createfolder.sh
 {% endhighlight %}
@@ -136,7 +137,7 @@ Si ce fichier n'est pas présent vous pouvez facilement le générer en suivant 
 
 {% highlight ruby %}
 #génération des sous dossier
-cd /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/coeur_2/
+cd /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/
 echo ''  > createfolder.sh
 echo ''  >> createfolder.sh
 #et enfin
@@ -146,14 +147,15 @@ sh createfolder.sh
 
 Ainsi nous disposons de l'arborescence suivante:
 
-* `Espece_2`
-  * `Coeur_1`  
-    * `35`        (données de diffusion)
-    * `36`        (données de résolution)  
-    * `STDT`      (dossier de post-traitement)
-      * `ST`      
-      * `DT`
-      * `Stat`      
+* `Kadence`
+  * `Control`
+    * `Heart_1`  
+      * `30`        (données de diffusion)
+      * `4`        (données de haute-résolution)  
+      * `STDT`      (dossier de post-traitement)
+        * `ST`      
+        * `DT`
+        * `Stat`      
 &nbsp;
 
 
@@ -241,7 +243,14 @@ Les fichiers texte sont les suivants:
 * `threshold.txt` : renseigne les valeurs pour segmenter l'échantillon
 * `axis.txt` : renseigne les coordonnées du "long axis".
 
-Nous commencerons par uniquement renseigner le fichier `info.txt` qui à la structure suivante:
+Ces trois fichiers sont stockées dans la racine de chaque acquisition, par exemple `/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/`. Vous regarder s'il extsite en tapant la commande
+
+{% highlight ruby %}
+#ouverture du fichier info.txt s'il existe
+gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/info.txt &
+{% endhighlight %}
+
+ Nous commencerons par uniquement renseigner le fichier `info.txt` qui à la structure suivante:
 
 * taille de la matrice suivant x
 * taille de la matrice suivant y
@@ -257,13 +266,36 @@ Nous commencerons par uniquement renseigner le fichier `info.txt` qui à la stru
 * seuil DWI max (mettre 0)
 * drapeau N4 (mettre 0)
 
+Pour extaire ces informations, vous pouvez ouvrir le fichier suivant, le fichier `visu_par`. Ils sont spécifiques à la reconstruction.  
+
+{% highlight ruby %}
+#ouverture du fichier visu_par et methode de l'acquisition numero 30
+gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/2/visu_pars &
+
+
+#ligne 20 et 21, vous obtenez la taille de la matrice pour les trois directions:
+$VisuCoreSize=( 3 )
+200 166 200
+
+#ligne 20 et 21, vous obtenez la taille du champ de vue pour les trois directions:
+$VisuCoreExtent=( 3 )
+120 100 120
+
+{% endhighlight %}
+
+
+{% highlight ruby %}
+#ouverture du fichier info.txt s'il existe
+gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/info.txt &
+{% endhighlight %}
+
 Et enfin nous lançons la commande
 
 {% highlight ruby %}
 # déplacement si necessaire
 cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 # extraction des données avec la commande à 4 arguments
-./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ coeur_2/ 35 1
+./DT_fullC_beta_0.3 /media/nelsonleouf/sdb1/DICOM/Kadence/Control/ Heart_1/ 30 1
 {% endhighlight %}
 
 Plusieurs messages s'affichent, noter l'enregistrement de nombreux fichiers dans votre dossier `STDT/DT/` et en particulier dans le sous dossier `DT_PREPROCESSED_VTI`.
@@ -279,7 +311,8 @@ cd /home/nelsonleouf/Dev/VolView-3.4-Linux-x86_64/bin/
 ./Volview
 {% endhighlight %}
 
-Puis ouvrez le fichier `/home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/coeur_2/35/STDT/DT/DT_PREPROCESSED_VTI/139_DT_03_intensity.vti`
+Puis ouvrez le fichier `30_DT_04_diffusion_weighted_image.vti` correspondant à l'image pondérée en diffusion. `/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti`.
+Puis cliquer sur suivant plusieurs fois.
 
 ![image2](../../../../../images/image2.png)
 
@@ -324,7 +357,13 @@ Rendez-vous sur [ANTs](http://http://stnava.github.io/ANTs/) pour en savoir plus
 
 ### 3.4) Correction de biais (N4 ITK bias correcction)
 
-Cette étape est relativement longue (pour l'ordinateur), pour pouvoir passer outre si ce calcul a été fait, un drapeau a été ajouté dans le fichier de configuration `info.txt` à la ligne douze. `1` code pour effectuer ce calcul, `0` code pour ne pas effectuer ce calcul. Dans un premier temps, nous choisirons d'activer ce calcul en mettant le drapeau à `1`.
+Cette étape est relativement longue (pour l'ordinateur), pour pouvoir passer outre si ce calcul a été fait, un drapeau a été ajouté dans le fichier de configuration `info.txt` à la ligne treize. `1` code pour effectuer ce calcul, `0` code pour ne pas effectuer ce calcul. Dans un premier temps, nous choisirons d'activer ce calcul en mettant le drapeau à `1`.
+
+{% highlight ruby %}
+#ouverture du fichier info.txt et changement de la treizième ligne
+gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/30/info.txt &
+{% endhighlight %}
+
 
 Nous lançons la commande suivante
 
@@ -343,13 +382,19 @@ cd
 cd Dev/Volview/bin
 ./Volview
 #en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/139_DT_04_diffusion_weighted_image_cut.vtk
- /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/139_DT_04_diffusion_weighted_image_cut_N4.vtk
+ /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti
+ /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_cut_N4.vtk
 {% endhighlight %}
 
 ![image4](../../../../../images/image4.png)
 
 Vous pouvez maintenant désactiver la correction de biais N4 dans le fichier de configuration `info.txt` en mettant le drapeau à `0`.
+
+
+Discussion scientifique : ceci est coupe short axis.... regarder les différences de contrastes avant et après application du filtre. Modification du contraste global mais pas de moficiation à l'échelle de la structure , vérifier la présence de fibre cardiaque visible à l'oeil nu. Noter par ailleurs la présence de graisse autour du ventricule gauche qu'il faudrait segmenter par la suite. La diffussion pas effective sur le tissu graisseux.
+
+
+
 
 ### 3.5) Segmentation <a id="segmentation"></a>
 
@@ -390,7 +435,7 @@ Utilisez l'option threshold et les petites croix pour segmenter la région mid-v
 Maintenant notez les valeurs minimales maximales sur la seconde ligne du fichier selon cette nomenclature:
 
 FA_min_apexFA_max_apex Trace_min_apex Trace_max_apex DWI_min_apex DWI_max_apex
-**A_min_mid** **FA_max_mid**  Trace_min_mid  Trace_max_mid  DWI_min_mid  DWI_max_mid
+**FA_min_mid** **FA_max_mid**  Trace_min_mid  Trace_max_mid  DWI_min_mid  DWI_max_mid
 FA_min_base FA_max_base Trace_min_base Trace_max_base DWI_min_base DWI_max_base
 
 Répèter cette opération pour chaque région et chaque contraste afin de remplir les 24 valeurs, 12 minimales et 12 maximales en chargeant les fichiers suivants.
@@ -428,7 +473,7 @@ cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 
  Les volumes que vous venez de charger ont préalablement été filtrés avec un filtre gaussien 3D de kernel [1 1 1] afin d'enlever le bruit présent dans l'image et d'homogénéiser le seuillage.
 
-
+ Je rajoute cette phrase
 
 
 ### 3.6) Titre <a id="nomAncre"></a>
@@ -446,5 +491,7 @@ cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 * STI :
 * VTK :
 
+
+http://continuity.ucsd.edu/Continuity/Documentation/Tutorials/Segmentation
 
 #### 9.2) Le lexique <a id="lexique"></a>
