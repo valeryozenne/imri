@@ -561,12 +561,31 @@ Z_base
 {% highlight ruby %}
 #ouvrer un terminal
 cd
-cd Dev/Volview/bin
-./Volview
+cd Dev/ParaView-4.2.0-Linux-64bit/bin
+./paraview
 #en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
- /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti
- /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_cut_N4.vtk
+
 {% endhighlight %}
+
+
+![image14](../../../../../images/image14.png)
+
+![image15](../../../../../images/image15.png)
+
+![image16](../../../../../images/image16.png)
+
+![image17](../../../../../images/image17.png)
+
+![image18](../../../../../images/image18.png)
+
+![image19](../../../../../images/image19.png)
+
+
+Tutorials/BiventriclesFitting [lien](http://www.continuity.ucsd.edu/Continuity/Documentation/Tutorials/BiventriclesFitting)
+
+##### e) Segmentation plus fine du coeur sur ITK-SNAP
+
+Tutorials/Segmentation [lien](http://continuity.ucsd.edu/Continuity/Documentation/Tutorials/Segmentation)
 
 
 
@@ -583,6 +602,5 @@ cd Dev/Volview/bin
 * VTK :
 
 
-http://continuity.ucsd.edu/Continuity/Documentation/Tutorials/Segmentation
 
 #### 9.2) Le lexique <a id="lexique"></a>
