@@ -240,7 +240,7 @@ Les arguments sont les suivants:
 Les fichiers texte sont les suivants:
 
 * `info.txt` : renseigne la taille et la résolution des images
-* `threshold.txt` : renseigne les valeurs pour segmenter l'échantillon
+* `threshold.txt` : renseigne les valeurs pouSer segmenter l'échantillon
 * `axis.txt` : renseigne les coordonnées du "long axis".
 
 Ces trois fichiers sont stockées dans la racine de chaque acquisition, par exemple `/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/`. Vous regarder s'il extsite en tapant la commande
@@ -416,9 +416,20 @@ cd Dev/Seg3D2/bin/
 
 {% endhighlight %}
 
-Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'eujeux est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
+Créer si nécessaire un nouveau projet que vous stocker dans votre répertoire personnel sur le réseau.
 
-Maintenant notez les deux valeurs (minimales et maximales) sur la première ligne du fichier de configuration `threshold.txt` selon cette nomenclature:
+![image5](../../../../../images/image5.png)
+
+
+L'écran est divisé en 4 panneaux, si ce n'est pas le cas cliquer sur `View` puis `Two And Two`. Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'eujeux est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
+
+Aller maintenant dans la rubrique `Tools`, puis sélectionner l'option `Threshold`, une fenêtre s'ouvre sur la droite. Cliquer le bandeau `Clear Seeds` puis cliquer sur l'image sur le tissu que vous souhaitez selectionner. Une petite croix apparaît répéter cette opération antant que nécessaire. Vous devez obtenir un résultat similaire aux fenêtres suivantes.
+
+![image6](../../../../../images/image6.png)
+
+![image7](../../../../../images/image7.png)
+
+Maintenant notez les deux valeurs (minimales et maximales, ici 0.14 et 0.83) situées dans la fenêtre `Upper` and `Lower` sur la première ligne du fichier de configuration `threshold.txt` selon cette nomenclature:
 
 **FA_min_apex** **FA_max_apex** Trace_min_apex Trace_max_apex DWI_min_apex DWI_max_apex
 FA_min_mid  FA_max_mid  Trace_min_mid  Trace_max_mid  DWI_min_mid  DWI_max_mid
@@ -431,6 +442,9 @@ Puis passez à la région mid ventriculaire en ouvrant le fichier:
 {% endhighlight %}
 
 Utilisez l'option threshold et les petites croix pour segmenter la région mid-ventriculaire. N'hésitez pas enlever la graisse.
+
+![image8](../../../../../images/image8.png)
+
 
 Maintenant notez les valeurs minimales maximales sur la seconde ligne du fichier selon cette nomenclature:
 
@@ -454,20 +468,48 @@ Répèter cette opération pour chaque région et chaque contraste afin de rempl
 
 {% endhighlight %}
 
+
+![image9](../../../../../images/image9.png)
+
+
+
 Une fois ces étapes effectuées,  les valeurs de segmentation sont sauvegardées, vous obtiendrais un fichier similaire aux lignes ci-dessous. Si la segmentation n'est pas satisfaisante vous pouvez rejouer cette étape autant que nécessaire pour ajuster au mieux les seuillages.
 
 0.23 0.72 0.53 1.14 228580000 794832000     
 0.19 0.89 0.51 1.10 245244992 778752000     
 0.20 0.88 0.54 1.06 311708000 966128000
 
-Maintenant, relancer le programme `DT_fullC_beta_0` avec la commande suivante:
+Maintenant, relancer le programme `DT_fullC_beta_3` avec la commande suivante:
 
 {% highlight ruby %}
 # déplacement si necessaire
 cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 # lancement de la commande à quatre argument avec le mode n°2
-./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ coeur_2/ 35 2
+./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ Heart_1/ 30 2
 {% endhighlight %}
+
+![image10](../../../../../images/image10.png)
+
+Noter la création de plusieurs masques que vous pouvez ouvrir avec Seg3D ou Volview pour vérifier la qualité de la segmentation:
+{% highlight ruby %}
+
+/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_fractional.vtk
+
+/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_trace.vtk
+
+/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_dwi.vtk
+
+/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_combine.vtk
+
+après utilisation d'un kernel [3,3,3] pour boucher les trous dans le mask
+/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers.vtk
+
+{% endhighlight %}
+
+
+
+
+
 
 ##### d) Quelques remarques sur cette étape.
 
@@ -477,6 +519,55 @@ cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 
 
 ### 3.6) Titre <a id="nomAncre"></a>
+
+##### a) Définition de l'axe principal du coeur
+
+Nous allons maintenant regarder notre segmentation et définir deux points par lesquel passe l'axe principal du coeur, ces points se situent à l'apex et dans la partie basale du coeur. Nous considérons pour cela uniquement le ventricule gauche Nous ajouterons alors les coordonnées correspondantes dans le fichier de configuration `axis.txt`.
+
+Pour cela , nous chargeons dans Seg3D le fichier `/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers_1px.vtk`.
+Et nous utilisons le curseur, les coordonnées se mettent à jour directement en bas à droite
+
+![image11](../../../../../images/image11.png)
+
+nedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/30/info.txt &
+
+Maintenant notez les valeurs de x,y,z du fichier selon cette nomenclature:
+
+X_apex
+Y_apex
+Z_apex
+X_base
+Y_base
+Z_base
+
+
+##### b) Calcul des angles helix ...
+
+{% highlight ruby %}
+./DT_fullC_beta_0.3 /media/nelsonleouf/sdb1/DICOM/Kadence/Control/ Heart_1/ 30 3
+{% endhighlight %}
+
+
+
+##### c) Ouverture des angles dans Volview
+
+![image12](../../../../../images/image12.png)
+
+
+![image13](../../../../../images/image13.png)
+
+##### d) Ouverture des vecteurs dans Paraview
+
+{% highlight ruby %}
+#ouvrer un terminal
+cd
+cd Dev/Volview/bin
+./Volview
+#en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
+ /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti
+ /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_cut_N4.vtk
+{% endhighlight %}
+
 
 
 ### 9) Annexe <a id="annexe"></a>
