@@ -67,7 +67,7 @@ ls
 
 &nbsp;
 
-### 1.5) Arborescence des fichiers Bruker
+### 1.5) Bruker folder structure
 
 Pour chaque acquisition numérotée de 1 à N, nous retrouvons la même arborescence avec:
 
@@ -444,7 +444,7 @@ Utilisez l'option threshold et les petites croix pour segmenter la région mid-v
 ![image8](../../../../../images/image8.png)
 
 
-Maintenant notez les valeurs minimales maximales sur la seconde ligne du fichier selon cette nomenclature:
+Next we'll add the minimum and maximum values on the second line according to this classification/convention:
 
 FA_min_apexFA_max_apex Trace_min_apex Trace_max_apex DWI_min_apex DWI_max_apex
 **FA_min_mid** **FA_max_mid**  Trace_min_mid  Trace_max_mid  DWI_min_mid  DWI_max_mid
@@ -469,20 +469,18 @@ Répèter cette opération pour chaque région et chaque contraste afin de rempl
 
 ![image9](../../../../../images/image9.png)
 
-
-
 Une fois ces étapes effectuées,  les valeurs de segmentation sont sauvegardées, vous obtiendrais un fichier similaire aux lignes ci-dessous. Si la segmentation n'est pas satisfaisante vous pouvez rejouer cette étape autant que nécessaire pour ajuster au mieux les seuillages.
 
 0.23 0.72 0.53 1.14 228580000 794832000     
 0.19 0.89 0.51 1.10 245244992 778752000     
 0.20 0.88 0.54 1.06 311708000 966128000
 
-Maintenant, relancer le programme `DT_fullC_beta_3` avec la commande suivante:
+Now we are ready to create our mask, relaun the sofware `DT_fullC_beta_3` with the previous command line:
 
 {% highlight ruby %}
-# déplacement si necessaire
+# if necessary, navigate to the build folder using cd
 cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
-# lancement de la commande à quatre argument avec le mode n°2
+# launch the programme with the following arguments
 ./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ Heart_1/ 30 2
 {% endhighlight %}
 
@@ -513,12 +511,15 @@ après utilisation d'un kernel [3,3,3] pour boucher les trous dans le mask
 
  Les volumes que vous venez de charger ont préalablement été filtrés avec un filtre gaussien 3D de kernel [1 1 1] afin d'enlever le bruit présent dans l'image et d'homogénéiser le seuillage.
 
- Je rajoute cette phrase
+
+#### e) The cardiac coordinate system
 
 
-### 3.6) Titre <a id="nomAncre"></a>
 
-##### a) Définition de l'axe principal du coeur
+
+### 3.6)  <a id="nomAncre"></a>
+
+##### a) Long axis definition
 
 Nous allons maintenant regarder notre segmentation et définir deux points par lesquel passe l'axe principal du coeur, ces points se situent à l'apex et dans la partie basale du coeur. Nous considérons pour cela uniquement le ventricule gauche Nous ajouterons alors les coordonnées correspondantes dans le fichier de configuration `axis.txt`.
 
@@ -527,7 +528,10 @@ Et nous utilisons le curseur, les coordonnées se mettent à jour directement en
 
 ![image11](../../../../../images/image11.png)
 
-nedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/30/info.txt &
+{% highlight ruby %}
+# create and edit the axis.txt file to save the long axis coordinates
+nedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/30/axis.txt &
+{% endhighlight %}
 
 Maintenant notez les valeurs de x,y,z du fichier selon cette nomenclature:
 
@@ -539,15 +543,20 @@ Y_base
 Z_base
 
 
-##### b) Calcul des angles helix ...
+##### b) Calcul des angles helix, tranverse, beta ...
+
+Il existe plusieurs méthodes pour analyser la microstructure cardiaque. Une des plus courante consiste à projeter les vecteurs propres issus du tenseur de diffusion dans un repère cylindrique puis à calculer l'angle entre la projection du vecteur et les vecteurs directeurs de ce repère. Par exemple l'angle hélix est l'angle entre la projection du premier vecteur propre et l'axe z du repère cylindrique (qui correspond à l'axe principale du coeur). La structure du myocarde est très couramment décrite en utilisant cet angle, en effet en parcourant le myocarde de l'epicarde à l'endocarde, on observe une rotation de l'angle hélix de 120° environ.
+
+
 
 {% highlight ruby %}
+#launch the software with 3 as final argument to calculate the helix angle
 ./DT_fullC_beta_0.3 /media/nelsonleouf/sdb1/DICOM/Kadence/Control/ Heart_1/ 30 3
 {% endhighlight %}
 
 
 
-##### c) Ouverture des angles dans Volview
+##### c) Affichage des résultats dans Volview
 
 ![image12](../../../../../images/image12.png)
 
@@ -557,12 +566,11 @@ Z_base
 ##### d) Ouverture des vecteurs dans Paraview
 
 {% highlight ruby %}
-#ouvrer un terminal
+#open a terminal
 cd
 cd Dev/ParaView-4.2.0-Linux-64bit/bin
 ./paraview
-#en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
-
+#at the top left-hand corner, clic on file, then open and load the following files:
 {% endhighlight %}
 
 
