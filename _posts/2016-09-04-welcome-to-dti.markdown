@@ -14,12 +14,11 @@ Bienvenue sur ce tutorial consacré au traitement des données Bruker de diffusi
 
 &nbsp;
 
-### 1.1) Sommaire
-
+### 1.1) Summary
 
 Les questions ( dans le désordre ) que vous vous posez.
 
-* [Par où commencer ?](#prerequis)
+* [Where to begin ?](#prerequis)
 
 * [Est-ce que c'est compliqué ?](#prerequis)
 
@@ -39,15 +38,15 @@ Les questions ( dans le désordre ) que vous vous posez.
 
 &nbsp;
 
-### 1.2) Pré-requis <a id="prerequis"></a>
+### 1.2) 	Prerequisite <a id="prerequis"></a>
 
-Aucun pré-requis n'est nécessaire, si toutefois ce tutorial est incomplet et/ou contient des erreurs/approximations, n'hésitez pas à nous en faire part. Vous pouvez évidemment contribuer, corriger, et/ou créer très rapidement votre page.
+No specific prerequisites are necessary for this tutorial, however some previous experience with linux or mac terminal might help the reader. si toutefois ce tutorial est incomplet et/ou contient des erreurs/approximations, n'hésitez pas à nous en faire part. Vous pouvez évidemment contribuer, corriger, et/ou créer très rapidement votre page.
 
 Compter une demi-journée de travail pour traiter votre premier jeu de données. Après quelques jours, 30 minutes suffisent pour tout effectuer.
 
 &nbsp;
 
-### 1.3) (à compléter) Extraction des données de la console Bruker sous format DICOM  <a id="dicomExtraction"></a>
+### 1.3) (à compléter) Extraction of mri data from Bruker consol under DICOM format <a id="dicomExtraction"></a>
 
 Nous allons utliser le logiciel `Paravision` de Bruker pour extraire les images au format DICOM.
 
@@ -60,14 +59,13 @@ Lors de l'examen, les données Bruker sont stockés dans des dossiers numéroté
 Pour cela, ouvrir le menu puis aller dans le dossier ou ouvrir un terminal et taper la commande suivante:
 
 {% highlight ruby %}
-#se déplacer dans un répertoire
+#open a terminal and to navigate into the sofware directory, use "cd pathToDirectory"
 cd /opt/PV6/.../2016-09-09-examen
-#taper la commande suivante pour obtenir la liste des dossiers
+#the ls command will show you the files in your current directory
 ls
 {% endhighlight %}
 
 &nbsp;
-
 
 ### 1.5) Arborescence des fichiers Bruker
 
@@ -399,29 +397,29 @@ Discussion scientifique : ceci est coupe short axis.... regarder les différence
 ### 3.5) Segmentation <a id="segmentation"></a>
 
 
-La segmentation peut-être effectuée plus ou moins finement. L'approche ici est la plus robuste trouvée pour segmenter des échantillons relativement large. Pour cela, l'échantillon est divisé en 3 segments noté apex, mid, et base selon l'axe principal du coeur. Si ce n'est pas le cas veuillez effectuer les rotations nécessaires.
+La segmentation peut-être effectuée plus ou moins finement. L'approche suggérée est loin d'être extaustive mais offre un niveau de précision relativement acceptable pour notre application. Néanmoins de nombreuses altérnatives sont disponibles.
 
-La première étape est un seuillage sur les images pondérée en diffusion, la fraction d'anistropie, la trace.
+ La première étape est un seuillage sur la fraction d'anistropie, la trace et les images pondérée en diffusion. Pour commencer, nous divisons l'échantillon en 3 segments noté apex, mid, et base selon l'axe principal du coeur. Si ce n'est pas le cas veuillez effectuer les rotations nécessaires.
 
-Vous allez premièrement segmenter trois régions de l'échantillon de l'apex à la base. Pour cela nous utiliserons le logiciel Seg3D, nous ajouterons alors chaque seuil obtenu dans le fichier de configuration `threshold.txt` selon la procédure suivante.
+Nous utilisons ensuite le logiciel Seg3D pour déterminer la valeur du seuillage et nous ajoutons alors chaque seuil obtenu dans le fichier de configuration `threshold.txt` selon la procédure suivante. Les valeurs étant sauvegardés dans un fichier texte, il sera alors possible de les modifier pour effectuer des ajustements.
 
 {% highlight ruby %}
-#ouvrer un terminal puis ouvrez le logiciel de segmentation Seg3D2
+#open a terminal and to navigate into the sofware directory, use "cd pathToDirectory"
 cd
 cd Dev/Seg3D2/bin/
 ./Seg3D
-#en haut à gauche, cliquer sur menu, puis ouvrir et charger le fichier suivant:
-
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
-
 {% endhighlight %}
 
-Créer si nécessaire un nouveau projet que vous stocker dans votre répertoire personnel sur le réseau.
+Click on `Start New Project`, choose `Heart_1_DWI` as project name and your personal directory as project path. Then at the top left-hand corner, click on the `File`, then `Import Layer from Single File` and open the following file:
+
+{% highlight ruby %}
+#file to open with Seg3D
+/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
+{% endhighlight %}
 
 ![image5](../../../../../images/image5.png)
 
-
-L'écran est divisé en 4 panneaux, si ce n'est pas le cas cliquer sur `View` puis `Two And Two`. Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'eujeux est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
+The window is divided in 4 sub windows, if not click on `View` then `Two And Two`. Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'eujeux est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
 
 Aller maintenant dans la rubrique `Tools`, puis sélectionner l'option `Threshold`, une fenêtre s'ouvre sur la droite. Cliquer le bandeau `Clear Seeds` puis cliquer sur l'image sur le tissu que vous souhaitez selectionner. Une petite croix apparaît répéter cette opération antant que nécessaire. Vous devez obtenir un résultat similaire aux fenêtres suivantes.
 
